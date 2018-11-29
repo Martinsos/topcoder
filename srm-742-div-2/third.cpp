@@ -7,7 +7,7 @@
 using namespace std;
 
 /**
- * I was trying to think of smart, dynamic programming solution, but space is just too big and I could not see any way
+ * I was trying to think of a smart, dynamic programming solution, but space is just too big and I could not see any way
  * to smartly guide the space search.
  * But, I realized that if we have an inventory of resistors that are with their values nicely covering space from 0 to MAX resistor value,
  * we can quickly build any resistor value just by combining them together in series (summing them up).
