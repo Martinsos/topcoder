@@ -14,9 +14,10 @@ construct target = transformResult $ construct' initialInventory (fromIntegral t
   where transformResult = map (\(id1, id2, c, v) -> (id1, id2, c)) . tail . reverse
 
 construct' :: [(Int, Int, Int, Double)] -> Double -> [(Int, Int, Int, Double)]
-construct' inv@((_,_,_,lastResV):_) target = if diff < 1 then inv else construct' (newRes:inv) target
+construct' inv@(lastRes:_) target = if diff < 1 then inv else construct' (newRes:inv) target
   where lenInv = length inv
-        diff = target - lastResV
-        (bestResId,(_,_,_,bestResV)) = maximumBy (\(_,(_,_,_,v1)) (_,(_,_,_,v2)) -> compare v1 v2)
-          $ filter (\(_,(_,_,_,v)) -> v <= diff) $ zip [lenInv - 1, lenInv - 2 .. 0] inv
-        newRes = (lenInv - 1, bestResId, 0, lastResV + bestResV)
+        diff = target - (value lastRes)
+        (bestResId, bestRes) = maximumBy (\(_, r1) (_, r2) -> compare (value r1) (value r2))
+          $ filter (\(_, r) -> value r <= diff) $ zip [lenInv - 1, lenInv - 2 .. 0] inv
+        newRes = (lenInv - 1, bestResId, 0, value lastRes + value bestRes)
+        value (_,_,_,v) = v
