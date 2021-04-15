@@ -1,9 +1,8 @@
-module TheQuestForGold
-    (
-    ) where
+#!/usr/bin/env stack
+-- stack --resolver lts-17.9 script --package hspec
 
+import Test.Hspec
 import Data.Maybe (listToMaybe)
-import Data.List (partition)
 
 
 data CellType = Start | Treasure | Pit | Empty deriving (Eq)
@@ -39,25 +38,10 @@ explore caveMap = if go [] [startCell] then "gold" else "no gold"
                            in filter isValidCell [(r-1, c), (r+1, c), (r, c-1), (r, c+1)]
 
 
-test :: IO Bool
-test = do
-    -- NOTE: This block shouldn't change from problem to problem.
-    let executedTests = map (\t -> (runTestCase explore t, t)) testCases
-    let (passedTests, failedTests) = partition (fst . fst) executedTests
-    putStrLn "((<passed>, (<result>, <expected>)), <test_case>)"
-    putStrLn "Passed tests:"
-    mapM_ (putStrLn . show) passedTests
-    putStrLn "Failed tests:"
-    mapM_ (putStrLn . show) failedTests
-    if null failedTests
-        then putStrLn "SUCCESS: All tests passed!" >> return True
-        else putStrLn "FAILURE: Some tests failed." >> return False
+main :: IO ()
+main = hspec $ mapM_ (\tc -> it (show tc) $ runTest tc) testCases
   where
-    -- NOTE: Logic below is specific per problem.
-    runTestCase f testCase = let result = f $ fst testCase
-                                 expected = snd testCase
-                                 passed = result == expected
-                             in (passed, (result, expected))
+    runTest testCase = explore (fst testCase) `shouldBe` snd testCase
     testCases =
         [ (["S....", ".....", "...T.", "....."], "gold")
         , (["S....", "...P.", "..PTP", "...P."], "no gold")
