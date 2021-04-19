@@ -1,5 +1,5 @@
 #!/usr/bin/env stack
--- stack --resolver lts-17.9 script --package hspec
+-- stack script --resolver lts-17.9 --package hspec --package strongpath
 
 import Test.Hspec
 
